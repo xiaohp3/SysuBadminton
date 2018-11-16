@@ -2,6 +2,8 @@
 
 # **中大（东校区）羽毛球订场脚本快速上手**
 
+所需第三方库：beautifulsoup4, requests
+
 config.json 中的最后两项填写我校 NetID 和密码。
 
 登陆时的验证码保存为了图片，与脚本处于同一路径下。
@@ -12,7 +14,9 @@ book(court, time) 则是试图订场，返回值为字符串，若为“未支�
 
 resetDate(y, m, d) 可以把想要订场的日期重置为指定日期，初始时的日期为两天后。如果只传递一个参数，表明把日期重置为这么多天后（比如 resetDate(3)表示把日期重置为三天后）。
 
-autobadminton模块主要负责与服务器打交道，utility模块主要负责与写代码者打交道，可以选择像example一样，import utility模块，然后编写代码；也可以选择在IDLE里面执行utility，执行结束后进入交互模式。
+lst(start_time, end_time) 将打出一个表，内容为左闭右开的时间区间[start_time, end_time) 的场地是否有场。
+
+autobadminton模块主要负责与服务器打交道，utility模块主要负责与写代码者打交道，可以选择像example一样，import utility模块，然后编写代码；也可以选择直接运行utility模块，以进入交互模式。
 
 命令模式：
 
@@ -20,7 +24,7 @@ autobadminton模块主要负责与服务器打交道，utility模块主要负责
 
 交互模式：
 
-![test-1](images/test-2.png)
+![test-1](images/test-3.png)
 
 <br/>
 

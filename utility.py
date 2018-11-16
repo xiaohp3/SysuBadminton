@@ -1,6 +1,7 @@
 import time
 from autobadminton import login, bkd, ckd, isWeekday
 import autobadminton
+import code
 
 weekday_map = [-1 for i in range(30)]
 for i in range(4):
@@ -111,6 +112,34 @@ def book(time, court):
         return "Invalid parameters"
     return bkd(stock, detail)
 
+def lst(start, end):
+    stock = 0
+    mp = ()
+    if today_is_weekday:
+        stock = autobadminton.weekday_stock
+        mp = weekday_map
+    else:
+        stock = autobadminton.weekend_stock
+        mp = weekend_map
+    if start >= end:
+        print("Invalid parameters")
+        return
+
+    for i in range(autobadminton.nCourts):
+        print("\t" + str(i + 1), end = "")
+    print("")
+    for time in range(start, end):
+        if mp[time] == -1:
+            continue
+        print(str(time), end = "")
+        for court in range(1, autobadminton.nCourts + 1):
+            print("\t", end = "")
+            if check(time, court) != "ERROR":
+                print("o", end = "")
+        print("")
+
 
 resetDate(2)
 today_is_weekday = isWeekday()
+interp = code.InteractiveConsole(globals())
+interp.interact("Enter interactive mode.")
