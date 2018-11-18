@@ -6,9 +6,9 @@ import json
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
            }
 
+# pre-defined parameters
 session = requests.Session()
-weekday_stock = 44278
-weekend_stock = 45206
+stock = 44278
 nCourts = 15
 
 def Login_sup():
@@ -45,7 +45,7 @@ def Login_sup():
 def login():
     while (not Login_sup()):
         print("Wrong captcha or password")
-    print("Login success\n")
+    print("Login success.")
     init()
 
 def ckd(stock, stockdetailids):
@@ -86,37 +86,40 @@ def bkd(stock, stockdetailids):
     jsn = json.loads(r.text)
     return jsn["message"]
 
-def isWeekday(y = 0, m = 0, d = 0):
-    if y == 0 and m == 0 and d == 0:
-        t = time.localtime()
-        return t.tm_wday < 5
-    t = (y, m, d, 0, 0, 0, 0, 0, 0)
-    secs = time.mktime(t)
-    t = time.localtime(secs)
-    return t.tm_wday < 5
-
-
 def init():
-    global weekday_stock
-    global weekend_stock
+    # pre-defined parameters
+    check_sdid = 334330
+    print("Please wait while updating config.json...")
+    res_str = ""
+    global stock
     with open("config.json", "r") as file:
         conf = json.load(file)
         weekday_stock = int(conf["weekday_stock"])
         weekend_stock = int(conf["weekend_stock"])
         nCourts = int(conf["nCourts"])
-        
-    if isWeekday():
-        s = bkd(weekday_stock, 334330)
-        while s != "预订失败，座位已被预订":
-            weekday_stock += 1
-            s = bkd(weekday_stock, 334330)
+    
+    s1 = bkd(weekday_stock, check_sdid)
+    s2 = bkd(weekend_stock, check_sdid)
+    ok_str = "预订失败，座位已被预订"
+    ori_weekday_stock = weekday_stock
+    ori_weekend_stock = weekend_stock
+    while s1 != ok_str and s2 != ok_str:
+        weekday_stock += 1
+        s1 = bkd(weekday_stock, check_sdid)
+        weekend_stock += 1
+        s2 = bkd(weekend_stock, check_sdid)
+    if s1 == ok_str:
         conf["weekday_stock"] = str(weekday_stock)
+        stock = weekday_stock
+        res_str = "weekday_stock: " + str(ori_weekday_stock) + " -> " + str(weekday_stock)
     else:
-        s = bkd(weekend_stock, 334330)
-        while s != "预订失败，座位已被预订":
-            weekend_stock += 1
-            s = bkd(weekend_stock, 334330)
         conf["weekend_stock"] = str(weekend_stock)
+        stock = weekend_stock
+        res_str = "weekdend_stok: " + str(ori_weekend_stock) + " -> " + str(weekend_stock)
 
-    with open("config.json", "w") as file:
-        json.dump(conf, file)
+    if ori_weekday_stock == weekday_stock and ori_weekend_stock == weekend_stock:
+        res_str = "Already up-to-date."
+    else:
+        with open("config.json", "w") as file:
+            json.dump(conf, file)
+    print("Updating done. " + res_str)

@@ -1,33 +1,37 @@
-<font face="consolas">
+# **Quick start for court booking script in SYSU (East)**
 
-# **中大（东校区）羽毛球订场脚本快速上手**
+## What can it do?
 
-所需第三方库：beautifulsoup4, requests
+- Use python to book badminton courts in your own logic
+- Book the courts which are not shown in your browser
 
-config.json 中的最后两项填写我校 NetID 和密码。
+## Required third-party libraries
 
-登陆时的验证码保存为了图片，与脚本处于同一路径下。
+- beautifulsoup4
+- requests
 
-check(court, time) 检查该场地的信息，返回值为一个字符串，表示场地信息；若为“ERROR” ，正常情况下表示该场已经被预订（也就是说，已被预订的场无法查看信息），也有小概率表示脚本出了问题，麻烦在Issues里留言，谢谢 :)
+## Quick start
 
-book(court, time) 则是试图订场，返回值为字符串，若为“未支付”，则表示球场已经订到，还需要打开浏览器付一下钱。
+The last 2 items in config.json are the NetID and password in SYSU.
 
-resetDate(y, m, d) 可以把想要订场的日期重置为指定日期，初始时的日期为两天后。如果只传递一个参数，表明把日期重置为这么多天后（比如 resetDate(3)表示把日期重置为三天后）。
+The login captcha is saved as a picture, which is in the same path as the script.
 
-lst(start_time, end_time) 将打出一个表，内容为左闭右开的时间区间[start_time, end_time) 的场地是否有场。
+function check(time, court) checks the info of a court. The return value is a string, indicating the court info. It can also be the string "Error". In this case, it means that your given court has already been booked. (Yes you're right, the booked courts cannot be checked). Of course, it also probably means the existence of bugs. Please open a issue, thank you :)
 
-autobadminton模块主要负责与服务器打交道，utility模块主要负责与写代码者打交道，可以选择像example一样，import utility模块，然后编写代码；也可以选择直接运行utility模块，以进入交互模式。
+book(time, court) is used to book a court. Its return value is a string. If the string is "未支付", then you have booked a court successfully. What you should do next is to use your browser to view the order page and pay the money.
 
-命令模式：
+resetDate(y, m, d) can reset the date on which you want to book a court to the given date. The initial date is the day after tomorrow. If only one parameter is used, say resetDate(x), then it means reset the date to x days later.
+
+lst(start_time, end_time) will print a table on the console. The content is: in the time range [start_time, end_time), which court is available at which time.
+
+The module autobadminton deals with the server, and the module utility provides many convenient functions for programmers. Like example.py, programmers can first import utility in their .py source files and then write codes. Programmers can also run utility.py directly to enter interactive mode.
+
+## Examples
 
 ![test-0](images/test-1.png)
-
-交互模式：
 
 ![test-1](images/test-3.png)
 
 <br/>
 
-脚本尚且有许多待完善之处。
-
-</font>
+Many bugs still exist.

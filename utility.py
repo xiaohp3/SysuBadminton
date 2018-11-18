@@ -1,8 +1,9 @@
 import time
-from autobadminton import login, bkd, ckd, isWeekday
+from autobadminton import login, bkd, ckd
 import autobadminton
 import code
 
+# pre-defined parameters
 weekday_map = [-1 for i in range(30)]
 for i in range(4):
     weekday_map[18 + i] = i
@@ -17,8 +18,17 @@ weekend_map = tuple(weekend_map)
 
 seconds_in_day = 86400
 first_sdid = 0
-today_is_weekday = False
 is_weekday = False
+
+def isWeekday(y = 0, m = 0, d = 0):
+    if y == 0 and m == 0 and d == 0:
+        t = time.localtime()
+        return t.tm_wday < 5
+    t = (y, m, d, 0, 0, 0, 0, 0, 0)
+    secs = time.mktime(t)
+    t = time.localtime(secs)
+    return t.tm_wday < 5
+
 
 def date2stamp(y = 0, m = 0, d = 0):
     if y == 0 and m == 0 and d == 0:
@@ -28,6 +38,7 @@ def date2stamp(y = 0, m = 0, d = 0):
     stmp = time.mktime(t)
     return int(stmp)
 
+# pre-defined parameters
 std_weekday_stamp = date2stamp(2018, 11, 12)
 std_weekday_sdid  = 334210
 std_weekend_stamp = date2stamp(2018, 11, 17)
@@ -91,35 +102,25 @@ def getDetail(time, court):
         return first_sdid + weekend_map[time] * autobadminton.nCourts + court - 1
 
 def check(time, court):
-    stock = 0
-    if today_is_weekday:
-        stock = autobadminton.weekday_stock
-    else:
-        stock = autobadminton.weekend_stock
     detail = getDetail(time, court)
     if detail == -1:
         return "Invalid parameters"
-    return ckd(stock, detail)
+    return ckd(autobadminton.stock, detail)
 
 def book(time, court):
-    stock = 0
-    if today_is_weekday:
-        stock = autobadminton.weekday_stock
-    else:
-        stock = autobadminton.weekend_stock
     detail = getDetail(time, court)
     if detail == -1:
         return "Invalid parameters"
-    return bkd(stock, detail)
+    return bkd(autobadminton.stock, detail)
 
-def lst(start, end):
-    stock = 0
+def lst(start, end = -1):
+    if end == -1:
+        end = start + 1
+    
     mp = ()
-    if today_is_weekday:
-        stock = autobadminton.weekday_stock
+    if is_weekday:
         mp = weekday_map
     else:
-        stock = autobadminton.weekend_stock
         mp = weekend_map
     if start >= end:
         print("Invalid parameters")
@@ -140,6 +141,5 @@ def lst(start, end):
 
 
 resetDate(2)
-today_is_weekday = isWeekday()
 interp = code.InteractiveConsole(globals())
 interp.interact("Enter interactive mode.")
