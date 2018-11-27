@@ -1,1 +1,5 @@
-{"nCourts": "15", "weekday_stock": "44290", "weekend_stock": "45206", "NetID": "Your NetID", "password": "Your password"}
+{
+    "nCourts": "15", 
+    "NetID": "Your NetID", 
+    "password": "Your password"
+}

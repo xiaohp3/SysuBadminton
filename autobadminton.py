@@ -8,7 +8,6 @@ headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 # pre-defined parameters
 session = requests.Session()
-stock = 44278
 nCourts = 15
 
 def Login_sup():
@@ -46,7 +45,6 @@ def login():
     while (not Login_sup()):
         print("Wrong captcha or password")
     print("Login success.")
-    init()
 
 def ckd(stock, stockdetailids):
     south_book_url = "http://gym.sysu.edu.cn/order/show.html?id=61"
@@ -85,41 +83,3 @@ def bkd(stock, stockdetailids):
     r.encoding = "utf-8"
     jsn = json.loads(r.text)
     return jsn["message"]
-
-def init():
-    # pre-defined parameters
-    check_sdid = 334330
-    print("Please wait while updating config.json...")
-    res_str = ""
-    global stock
-    with open("config.json", "r") as file:
-        conf = json.load(file)
-        weekday_stock = int(conf["weekday_stock"])
-        weekend_stock = int(conf["weekend_stock"])
-        nCourts = int(conf["nCourts"])
-    
-    s1 = bkd(weekday_stock, check_sdid)
-    s2 = bkd(weekend_stock, check_sdid)
-    ok_str = "预订失败，座位已被预订"
-    ori_weekday_stock = weekday_stock
-    ori_weekend_stock = weekend_stock
-    while s1 != ok_str and s2 != ok_str:
-        weekday_stock += 1
-        s1 = bkd(weekday_stock, check_sdid)
-        weekend_stock += 1
-        s2 = bkd(weekend_stock, check_sdid)
-    if s1 == ok_str:
-        conf["weekday_stock"] = str(weekday_stock)
-        stock = weekday_stock
-        res_str = "weekday_stock: " + str(ori_weekday_stock) + " -> " + str(weekday_stock)
-    else:
-        conf["weekend_stock"] = str(weekend_stock)
-        stock = weekend_stock
-        res_str = "weekdend_stok: " + str(ori_weekend_stock) + " -> " + str(weekend_stock)
-
-    if ori_weekday_stock == weekday_stock and ori_weekend_stock == weekend_stock:
-        res_str = "Already up-to-date."
-    else:
-        with open("config.json", "w") as file:
-            json.dump(conf, file)
-    print("Updating done. " + res_str)
