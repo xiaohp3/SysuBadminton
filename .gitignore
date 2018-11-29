@@ -1,8 +1,3 @@
 captcha.png
-South_Kenshyu.xlsx
-kenshyu.txt
 __pycache__
-config_east.json
-config_south.json
-test
-example2.py
+*.json
